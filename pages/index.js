@@ -2,6 +2,7 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 
 import products from '../products.json'
+import { fromImageToUrl } from '../utils/urls'
 
 export default function Home() {
   return (
@@ -15,7 +16,7 @@ export default function Home() {
         <div key={product.name} className={styles.product}>
           <div className={styles.product__Row}>
             <div className={styles.product__ColImg}> 
-              <img src="" />
+              <img src={fromImageToUrl(product.image)} />
             </div>
             <div className={styles.product__Col}>
               {product.name} {product.price}
