@@ -1,11 +1,43 @@
 import Head from 'next/head'
-import { useContext } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import Link from 'next/link'
+
 import AuthContext from '../context/AuthContext'
+import { API_URL } from '../utils/urls'
+
+const useOrders = (user, getToken) => {
+    const [orders, setOrders] = useState([])
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            if(user) {
+                try {
+                    const token = await getToken()
+                    const order_res = await fetch(`${API_URL}/orders`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                    const data = await order_res.json()
+                    setOrders(data)
+                } catch (err) {
+                    setOrders([])
+                }
+            }
+        }
+
+        fetchOrders()
+    }, [user])
+
+    return orders
+}
 
 export default function Account() {
 
-    const { user, logoutUser } = useContext(AuthContext)
+    const { user, logoutUser, getToken } = useContext(AuthContext)
+
+    const orders = useOrders(user, getToken)
+    console.log("Account.render orders", orders)
 
     if(!user){
         return (
